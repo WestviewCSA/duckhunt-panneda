@@ -56,7 +56,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		bush.setXY(500, 300);
 		
 		dog.setScale(0.15, 0.15);
-		dog.setXY(0, 380);
+		dog.setXY(-160, 380);
 	}
 	
 	
@@ -76,10 +76,6 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 		if(time%1000 == 0) { //has it been 1 second?
 			roundTimer -= 1;
-			if(roundTimer == 0) {
-				//what do u do after one complete round?
-				roundTimer += 30;
-			}
 		}
 		
 		g.setFont(bigFont);
@@ -120,13 +116,23 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		//draw the round String
 		g.setColor(Color.white);
 		if(roundTimer >= 10) {
-			g.drawString("Time: "+this.roundTimer, 320, 540);
+			g.drawString("Time: "+this.roundTimer, 300, 540);
 		}
-		else if(roundTimer>= 0 && roundTimer < 10){
-			g.drawString("Time: "+this.roundTimer, 340, 540);
+		else if(roundTimer> 0 && roundTimer < 10){
+			if(time%2000 >= 1000) {
+				g.setColor(Color.RED);
+			}
+			else {
+				g.setColor(Color.white);
+			}
+			g.drawString("Time: "+this.roundTimer, 310, 540);
+			
 		}
 		else {
-			reset();
+			g.setColor(Color.RED);
+			g.drawString("Time: 0", 310, 540);
+			g.drawString("ROUND OVER!", 230, 300);
+			tr.setVx(0);
 		}
 		
 	}
@@ -189,8 +195,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		if(rMouse.intersects(rMain)) { //do the 2 rect intersect?
 			tr.setVy(-10);
 			score += 1;
-			dog.setXY(dog.getX(), dog.getY()-20);
-			dog.setXY(dog.getX(), dog.getY()+20);
+			dog.setXY(-160, 380);
+			dog.setVx(20);
+			if(dog.getX()>500) {
+				dog.setXY(-160, 380);
+				dog.setVx(0);
+			}
 		}
 		
 		
