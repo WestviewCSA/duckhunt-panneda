@@ -18,7 +18,7 @@ import javax.swing.Timer;
 
 public class Frame extends JPanel implements ActionListener, MouseListener, KeyListener {
 	
-	Font bigFont = new Font("Serif", Font.PLAIN, 80);
+	Font bigFont = new Font("Serif", Font.PLAIN, 50);
 	
 	//create a Rocket Object
 	Rocket tr = new Rocket();
@@ -43,7 +43,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	
 	//initialize any variables, objects, etc for the "start" of the game
 	public void init() {
-		//init the oundTimer and score
+		//init the roundTimer and score
 		roundTimer = 30;
 		score = 0;
 		time = 0;
@@ -113,13 +113,17 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		//draw time related Strings last so the are overlaid on top of everything else
 		g.setFont(bigFont);
 		
+		//scoring
+		g.setColor(Color.BLACK);
+		g.drawString("Points: "+this.score, 50, 40);
+		
 		//draw the round String
 		g.setColor(Color.white);
 		if(roundTimer >= 10) {
-			g.drawString(""+this.roundTimer, 360, 540);
+			g.drawString("Time: "+this.roundTimer, 320, 540);
 		}
 		else if(roundTimer>= 0 && roundTimer < 10){
-			g.drawString(""+this.roundTimer, 380, 540);
+			g.drawString("Time: "+this.roundTimer, 340, 540);
 		}
 		else {
 			reset();
@@ -184,6 +188,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		//check if they're colliding
 		if(rMouse.intersects(rMain)) { //do the 2 rect intersect?
 			tr.setVy(-10);
+			score += 1;
+			dog.setXY(dog.getX(), dog.getY()-20);
+			dog.setXY(dog.getX(), dog.getY()+20);
 		}
 		
 		
