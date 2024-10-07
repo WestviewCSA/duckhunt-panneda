@@ -20,6 +20,10 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	
 	Font bigFont = new Font("Serif", Font.PLAIN, 50);
 	
+	Font medFont = new Font("Serif", Font.PLAIN, 40);
+	
+	Font smallFont = new Font("Serif", Font.PLAIN, 20);
+	
 	//create a Rocket Object
 	Rocket tr = new Rocket();
 	
@@ -40,6 +44,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	int roundTimer;
 	int score;
 	long time; //long is bigger int that can hold bigger whole numbers
+	int currRound = 1;
 	
 	//initialize any variables, objects, etc for the "start" of the game
 	public void init() {
@@ -66,6 +71,16 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	}
 	
 	
+	//initialize object and vars for the next round
+	public void nextRound() {
+		//reset the roundCounter
+		roundTimer = 30;
+		currRound++;
+		
+		//recalibrate objects
+		tr.setVx(3*currRound);
+	}
+	
 	
 	
 	public void paint(Graphics g) {
@@ -74,7 +89,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		//add 16 to time since paint is called every 20 ms
 		time += 20; //time elapse updates
 		
-		if(time%1000 == 0) { //has it been 1 second?
+		if(time%100 == 0) { //has it been 1 second?
 			roundTimer -= 1;
 		}
 		
@@ -113,7 +128,11 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		g.setColor(Color.BLACK);
 		g.drawString("Points: "+this.score, 50, 40);
 		
+		g.setFont(medFont);
+		g.drawString("Round "+this.currRound, 350, 40);
+		
 		//draw the round String
+		g.setFont(bigFont);
 		g.setColor(Color.white);
 		if(roundTimer >= 10) {
 			g.drawString("Time: "+this.roundTimer, 300, 540);
@@ -132,7 +151,19 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			g.setColor(Color.RED);
 			g.drawString("Time: 0", 310, 540);
 			g.drawString("ROUND OVER!", 230, 300);
-			tr.setVx(0);
+			if(time==0) {
+				StdAudio.playInBackground("roundOver.wav");//fix this
+			}
+			//tr.setVx(0);
+			nextRound();
+			t.stop(); //stops the timer after this round is over
+		}
+		
+		//Text for mobing to next round
+		if(!t.isRunning()) {
+			g.setFont(smallFont);
+			g.setColor(Color.darkGray);
+			g.drawString("Press space for the next round", 275, 400);
 		}
 		
 	}
@@ -153,12 +184,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 		init(); //call your init method to give properties to the object and variables
 		
-		Timer t = new Timer(16, this);
 		t.start();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);
 	}
-	
+	//Make the timer visible to the other methods
+	Timer t = new Timer(16, this);
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
@@ -193,10 +224,13 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 		//check if they're colliding
 		if(rMouse.intersects(rMain)) { //do the 2 rect intersect?
-			tr.setVy(-10);
-			score += 1;
-			dog.setXY(-160, 380);
-			dog.setVx(20);
+			if(roundTimer>0) {
+				score += 1;
+				tr.setVy(-10);
+				dog.setXY(-160, 380);
+				dog.setVx(40);
+				StdAudio.playInBackground("we_reBlastingOffAgain.wav");
+			}
 			if(dog.getX()>500) {
 				dog.setXY(-160, 380);
 				dog.setVx(0);
@@ -222,6 +256,15 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 		System.out.println(arg0.getKeyCode());
+		
+		//space bar continue the round
+		//if the timer is stopped we can start it agin
+		if(arg0.getKeyCode()==32) {
+			//start the timer again
+			if(!t.isRunning()) {
+				t.start();
+			}
+		}
 	}
 
 	@Override
