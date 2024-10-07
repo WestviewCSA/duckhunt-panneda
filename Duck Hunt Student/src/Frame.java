@@ -89,7 +89,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		//add 16 to time since paint is called every 20 ms
 		time += 20; //time elapse updates
 		
-		if(time%100 == 0) { //has it been 1 second?
+		if(time%1000 == 0) { //has it been 1 second?
 			roundTimer -= 1;
 		}
 		
@@ -114,7 +114,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			tr.setScale(0.25, 0.25);
 			tr.setX((int)(Math.random()*300));
 			tr.setY((int)(Math.random()*300));
-			tr.setVx(3);
+			tr.setVx(3*currRound);
 			tr.setVy(0);
 		}
 		if(tr.getX()> 550||tr.getX()<-50) {
@@ -122,7 +122,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		}
 		
 		//draw time related Strings last so the are overlaid on top of everything else
-		g.setFont(bigFont);
+		g.setFont(medFont);
 		
 		//scoring
 		g.setColor(Color.BLACK);
