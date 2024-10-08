@@ -62,12 +62,14 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 		dog.setScale(0.15, 0.15);
 		dog.setXY(-160, 380);
+		StdAudio.playInBackground("trMotto.wav");
 	}
 	
 	
 	//resetting for multiple rounds etc
 	public void reset() {
-		
+		StdAudio.play("speedIncreased.wav");
+		StdAudio.play("trMotto.wav");
 	}
 	
 	
@@ -81,7 +83,11 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		tr.setVx(3*currRound);
 	}
 	
-	
+	public void points(Graphics p) {
+		super.paintComponent(p);
+		p.setFont(medFont);
+		p.drawString("+"+ currRound, dog.getX(), dog.getY());
+	}
 	
 	public void paint(Graphics g) {
 		super.paintComponent(g);
@@ -92,6 +98,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		if(time%1000 == 0) { //has it been 1 second?
 			roundTimer -= 1;
 		}
+		
 		
 		g.setFont(bigFont);
 		
@@ -119,6 +126,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		}
 		if(tr.getX()> 550||tr.getX()<-50) {
 			tr.setVx(tr.getVx()*-1);
+			StdAudio.playInBackground("boing.wav");
 		}
 		
 		//draw time related Strings last so the are overlaid on top of everything else
@@ -139,7 +147,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		}
 		else if(roundTimer> 0 && roundTimer < 10){
 			if(time%2000 >= 1000) {
-				g.setColor(Color.RED);
+				g.setColor(Color.RED);//used to make timer flash red
 			}
 			else {
 				g.setColor(Color.white);
@@ -147,19 +155,22 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 			g.drawString("Time: "+this.roundTimer, 310, 540);
 			
 		}
+		else if (roundTimer == 0 ) {
+			g.setColor(Color.RED);
+			g.drawString("Time: 0", 310, 540);
+			g.drawString("ROUND OVER!", 230, 300);
+		}
 		else {
 			g.setColor(Color.RED);
 			g.drawString("Time: 0", 310, 540);
 			g.drawString("ROUND OVER!", 230, 300);
-			if(time==0) {
-				StdAudio.playInBackground("roundOver.wav");//fix this
-			}
-			//tr.setVx(0);
-			nextRound();
 			t.stop(); //stops the timer after this round is over
+			StdAudio.play("roundOver.wav");
+			nextRound();
+			reset();
 		}
 		
-		//Text for mobing to next round
+		//Text for moving to next round
 		if(!t.isRunning()) {
 			g.setFont(smallFont);
 			g.setColor(Color.darkGray);
@@ -225,11 +236,12 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		//check if they're colliding
 		if(rMouse.intersects(rMain)) { //do the 2 rect intersect?
 			if(roundTimer>0) {
-				score += 1;
+				score += currRound;
 				tr.setVy(-10);
 				dog.setXY(-160, 380);
 				dog.setVx(40);
 				StdAudio.playInBackground("we_reBlastingOffAgain.wav");
+				points(null);
 			}
 			if(dog.getX()>500) {
 				dog.setXY(-160, 380);
