@@ -136,10 +136,10 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		g.drawString("Round "+this.currRound, 350, 40);
 		
 		if(dog.getVx()==10);
-		g.drawString("+"+currRound, 90 + dog.getX(), 130 + dog.getY());
+		g.drawString("+" + currRound, 90 + dog.getX(), 130 + dog.getY());
 		
 		//draw the round String
-		g.setFont(bigFont);
+		g.setFont(bigFont);  
 		g.setColor(Color.white);
 		if(roundTimer >= 10) {
 			g.drawString("Time: "+this.roundTimer, 300, 540);
