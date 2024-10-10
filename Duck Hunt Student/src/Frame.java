@@ -83,11 +83,7 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		tr.setVx(3*currRound);
 	}
 	
-	public void points(Graphics p) {
-		super.paintComponent(p);
-		p.setFont(medFont);
-		p.drawString("+"+ currRound, dog.getX(), dog.getY());
-	}
+	
 	
 	public void paint(Graphics g) {
 		super.paintComponent(g);
@@ -116,8 +112,8 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 		dog.paint(g);
 		
-		//logic for resetting the dog position and or making it bounce around
-		if(tr.getY() < -150) {
+		//logic for resetting the tr position and or making it bounce around
+		if(tr.getY() < -350) {
 			tr.setScale(0.25, 0.25);
 			tr.setX((int)(Math.random()*300));
 			tr.setY((int)(Math.random()*300));
@@ -138,6 +134,9 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 		
 		g.setFont(medFont);
 		g.drawString("Round "+this.currRound, 350, 40);
+		
+		if(dog.getVx()==10);
+		g.drawString("+"+currRound, 90 + dog.getX(), 130 + dog.getY());
 		
 		//draw the round String
 		g.setFont(bigFont);
@@ -239,10 +238,11 @@ public class Frame extends JPanel implements ActionListener, MouseListener, KeyL
 				score += currRound;
 				tr.setVy(-10);
 				dog.setXY(-160, 380);
-				dog.setVx(40);
+				dog.setVx(10);
 				StdAudio.playInBackground("we_reBlastingOffAgain.wav");
-				points(null);
+				
 			}
+			//resets dog back to off screen
 			if(dog.getX()>500) {
 				dog.setXY(-160, 380);
 				dog.setVx(0);
